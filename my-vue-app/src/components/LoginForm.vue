@@ -6,13 +6,7 @@
         <label for="password">Mật khẩu:</label>
         <input type="password" id="password" v-model="password" required>
 
-        <label for="corfirmPassword">Nhập lại mật khẩu:</label>
-        <input type="password" id="conrfirmpassword" v-model="confirmPassword" required>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" v-model="email" required>
-
-        <button class="btn-register" type="submit">Đăng nhập</button>
+        <button class="btn-login" type="submit">Đăng nhập</button>
     </form>
 </template>
 
@@ -22,21 +16,30 @@ export default {
         return {
             username: '',
             password: '',
-            email: "",
-            confirmPassword: ""
+           
         };
     },
     methods: {
         submitForm() {
-            const Username = sessionStorage.getItem("username");
-            const Password = sessionStorage.getItem("password");
-            if (this.username === Username && this.password === Password) {
-               alert("Đăng nhập thành công")
-            } else {
-               alert("Tài khoản hoặc mật khẩu không chính xác")
+            const users = JSON.parse(sessionStorage.getItem("users"));
+           console.log(users);
+           const userRegisted=users.find((el)=>el.username===this.username)
+           if(userRegisted){
+            if(userRegisted.password===this.password){
+                alert("đăng nhap thanh cong")
+                this.username = '';
+                this.password = ''; 
+                this.$router.push('/home');
+                sessionStorage.setItem('loggedIn', true);
+               
+            }else{
+                alert("sai mat khau")
             }
-            this.username = '';
-            this.password = ''; 
+           }else{
+            alert("username k dung")
+           }
+            
+          
         }
     }
 };
@@ -72,7 +75,7 @@ input {
     border-radius: 4px;
 }
 
-.btn-register {
+.btn-login {
     width: 200px;
     margin: 10px 0 10px 0;
     padding: 10px;

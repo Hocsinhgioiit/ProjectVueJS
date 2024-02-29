@@ -52,13 +52,13 @@ export default {
                 return;
             } 
 
-            // Kiểm tra mật khẩu nhập lại khớp với mật khẩu đã đặt
+
             if (this.password !== this.confirmPassword) {
                 alert(" mat khau khong khop")
                 return;
             }
 
-            // Thêm người dùng vào mảng lưu trữ
+
             if(!isUserRegistered(userData.username)){
                 addUserToStorage(userData);
                 this.$router.push('/login');
@@ -81,7 +81,7 @@ function addUserToStorage(userData) {
     sessionStorage.setItem('users', JSON.stringify(users));
 }
 
-// Hàm để kiểm tra xem người dùng đã đăng ký có tồn tại trong mảng lưu trữ hay không
+
 function isUserRegistered(username) {
    
     let users = JSON.parse(sessionStorage.getItem('users')) || [];
