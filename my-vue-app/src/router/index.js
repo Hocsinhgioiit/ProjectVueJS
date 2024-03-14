@@ -2,19 +2,23 @@ import { createRouter, createWebHistory } from 'vue-router';
 import login from "../components/LoginForm.vue";
 import register from "../components/RegisterForm.vue";
 import home from "../components/Home.vue";
-
-
+import header from "../components/Header.vue"
+import success from "../components/RegisterSuccess.vue"
+import failure from "../components/RegisterFailure.vue"
+import request from "../components/RequestChangePassword.vue"
+import otp from "../components/OtpForm.vue"
+import change from '../components/ChangePassword.vue';
 const routes = [
 
     {
         path: '/',
+        name: 'header',
+        component: header
+    },
+    {
+        path: '/register',
         name: 'register',
         component: register
-    }, ,
-    {
-        path: '/login',
-        name: 'login',
-        component: login
     },
     {
         path: '/home',
@@ -22,7 +26,37 @@ const routes = [
         component: home,
         meta: { requiresAuth: true }
 
+    },
+    {
+        path: '/success',
+        name: 'success',
+        component: success,
+
+    },
+    {
+        path: '/failure',
+        name: 'failure',
+        component: failure,
+
+    },
+    {
+        path: '/request',
+        name: 'request',
+        component: request,
+
+    },
+    {
+        path: '/otp',
+        name: 'otp',
+        component: otp,
+    },
+    {
+        path: '/change',
+        name: 'change',
+        component: change,
     }
+
+
 ];
 
 

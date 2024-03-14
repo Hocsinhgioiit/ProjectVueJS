@@ -1,88 +1,149 @@
 <template>
     <form class="form-container" @submit.prevent="submitForm">
-        <label for="username">Tên người dùng:</label>
-        <input type="text" id="username" v-model="username" required>
+       <div class="form-user">
+        <label for="usernamelogin">Tài khoản</label>
+        <br>
+        <input class="ip-user" type="text" id="usernamelogin" v-model="username" required placeholder="Tài khoản...">
+       </div>
 
-        <label for="password">Mật khẩu:</label>
-        <input type="password" id="password" v-model="password" required>
-
+      <div class="form-pwd">
+        <label  for="password">Mật khẩu</label>
+        <br>
+        <input class="ip-password" :type="showPassword ? 'text' : 'password'" id="passwordlogin" v-model="password" required placeholder="Nhập mật khẩu">
+        <span class="toggle-password" @click="togglePasswordVisibility">
+            <img  class="icon-pw" :src="showPassword ? iconOn : iconOff" alt="">
+        </span>
+        
+      </div>
+        <div >
         <button class="btn-login" type="submit">Đăng nhập</button>
+        </div>
+    
     </form>
 </template>
 
 <script>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
 export default {
-    data() {
-        return {
-            username: '',
-            password: '',
-           
+    name:'Login',
+    setup() {
+        const username = ref('');
+        const password = ref('');
+        const showPassword = ref(false);
+        const router = useRouter();
+        const iconOff = ref('./public/seepw.png')
+        const iconOn = ref('./public/seeon.png')
+        const togglePasswordVisibility = () => {
+        showPassword.value = !showPassword.value;
         };
-    },
-    methods: {
-        submitForm() {
-            const users = JSON.parse(sessionStorage.getItem("users"));
-           console.log(users);
-           const userRegisted=users.find((el)=>el.username===this.username)
-           if(userRegisted){
-            if(userRegisted.password===this.password){
-                alert("đăng nhap thanh cong")
-                this.username = '';
-                this.password = ''; 
-                this.$router.push('/home');
-                sessionStorage.setItem('loggedIn', true);
-               
-            }else{
-                alert("sai mat khau")
+        const submitForm = async () => {
+            try {
+                const response = await axios.post('https://dev-fe-exam.viajsc.com/ExamUser/login', {
+                    username: username.value,
+                    password: password.value
+                })
+                if (response.data.success) {
+                    alert('Đăng nhập thành công');
+                    sessionStorage.setItem('username', username.value);
+                    username.value = '';
+                    password.value = '';
+                    sessionStorage.setItem('loggedIn', true);
+                    router.push('/home');
+                } else {
+                    alert('Đăng nhập không thành công: ' + response.data.message);
+                }
+            } catch (error) {
+                console.error('Lỗi khi gửi yêu cầu:', error);
+                alert('Đã xảy ra lỗi trong quá trình xác thực!');
             }
-           }else{
-            alert("username k dung")
-           }
-            
-          
-        }
+        };
+
+        return {
+            username,
+            password,
+            iconOn,
+            iconOff,
+            showPassword,
+            togglePasswordVisibility,
+            submitForm
+        };
     }
 };
 </script>
 
 <style scoped>
-.form-container {
-    display: flex;
-    flex-direction: column;
-    margin: auto;
-    max-width: max-content;
-    height: auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-image: url('/bg.jpg');
-}
+    .form-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .form-user{
+        height: 44px;
+        margin-left: 20px;
+        color: #191D23;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 19px;
+        margin-bottom: 20px;
+    }
+    .form-pwd{
+        position: relative;
+        display: inline block;
+        height: 44px;
+        margin-left: 20px;
+        color: #191D23;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 19px;
+        margin-bottom: 20px;
+    }
+    input::placeholder{
+        font-family: Inter;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 19px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: #A0ABBB;
+        text-indent: 10px;
 
-h1 {
-    text-align: center;
-}
+    }
+    .ip-user{
+        text-indent: 10px;
+        font-size: 16px;
+        width: 290px;
+        height: 44px;
+        border: solid 1px #ccc;
+        border-radius: 4px;
+    }
+    .ip-password{
+        text-indent: 10px;
+        font-size: 16px;
+        width: 250px;
+        height: 44px;
+        border: solid 1px #ccc;
+        border-radius: 4px;
+    }
+    .icon-pw{
+        position: absolute;
+        top: 100%;
+        right: 10px; 
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+    .btn-login{
+        margin-left: 10px;
+        width: 120px;
+        height: 50px;
+        margin-top: 22px;
+        color: #fff;
+        background-color: #FDBA4D;
+        border-radius:4px ;
+        border: solid 1px #FDBA4D;
+        font-size: 16px;
+        font-weight: 600;
+    }
 
-label {
-    font-weight: 500;
-}
-
-input {
-    display: block;
-    width: 450px;
-    margin: 10px 0 10px 0;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.btn-login {
-    width: 200px;
-    margin: 10px 0 10px 0;
-    padding: 10px;
-    background-color: #14e069;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    margin-left: 130px;
-}
 </style>
